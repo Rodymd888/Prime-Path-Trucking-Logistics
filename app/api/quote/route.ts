@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
 import { site } from "@/lib/site";
+import {
+  equipmentOptions,
+  serviceOptions,
+  frequencyOptions,
+} from "@/lib/fleet";
 export const runtime = "nodejs";
-const services = new Set([
-  "Dedicated trucking",
-  "Regional truckload",
-  "Power-only",
-  "Let’s discuss my needs",
-]);
-const frequencies = new Set([
-  "To be discussed",
-  "One-time shipment",
-  "Daily",
-  "Weekly",
-  "Recurring / contract",
-]);
+const services = new Set<string>(serviceOptions);
+const frequencies = new Set<string>(frequencyOptions);
+const equipment = new Set<string>(equipmentOptions);
 const limits: Record<string, number> = {
   name: 120,
   company: 160,
@@ -22,6 +17,7 @@ const limits: Record<string, number> = {
   origin: 120,
   destination: 120,
   service: 80,
+  equipment: 80,
   frequency: 80,
   date: 20,
   details: 3000,
@@ -99,6 +95,7 @@ export async function POST(request: Request) {
     !data.destination ||
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) ||
     !services.has(data.service) ||
+    !equipment.has(data.equipment) ||
     !frequencies.has(data.frequency) ||
     data.consent !== "on"
   )
@@ -115,6 +112,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ mode: "email-draft" });
   const text = [
     "PRIME PATH — FREIGHT INQUIRY",
+    "Equipment: " + data.equipment,
     "",
     `Name: ${data.name}`,
     `Company: ${data.company}`,

@@ -8,7 +8,8 @@ const inquiry = {
   email: "qa@example.com",
   origin: "Dallas, TX",
   destination: "Houston, TX",
-  service: "Dedicated trucking",
+  service: "Dedicated routes",
+  equipment: "Day Cab",
   frequency: "Weekly",
   consent: "on",
   website: "",
@@ -102,6 +103,7 @@ test("freight inquiry boundaries and delivery states", async (t) => {
           assert.equal(payload.reply_to, inquiry.email);
           assert.match(payload.text, /Dallas, TX/);
           assert.match(payload.text, /Houston, TX/);
+          assert.match(payload.text, /Equipment: Day Cab/);
           return new Response(JSON.stringify({ id: "test-message" }), {
             status: 200,
           });
@@ -112,6 +114,35 @@ test("freight inquiry boundaries and delivery states", async (t) => {
         assert.deepEqual(await result.json(), { sent: true });
       },
     );
+    await t.test(
+      "forwards box-truck and cargo-van selections in the inquiry",
+      async () => {
+        for (const choice of ["Box Truck", "Cargo Van"]) {
+          globalThis.fetch = async (_url, init) => {
+            const body = JSON.parse(String(init?.body));
+            assert.ok(body.text.includes("Equipment: " + choice));
+            return new Response(JSON.stringify({ id: "test-message" }), {
+              status: 200,
+            });
+          };
+          assert.equal(
+            (await POST(request({ ...inquiry, equipment: choice }))).status,
+            200,
+          );
+        }
+      },
+    );
+    await t.test("requires a supported equipment choice", async () => {
+      assert.equal(
+        (await POST(request({ ...inquiry, equipment: "" }))).status,
+        400,
+      );
+      assert.equal(
+        (await POST(request({ ...inquiry, equipment: "Passenger bus" })))
+          .status,
+        400,
+      );
+    });
     await t.test(
       "provider failure returns a recoverable error, never a success",
       async () => {

@@ -1,84 +1,89 @@
 # Prime Path Trucking & Logistics
 
-A complete Next.js App Router website for **Prime Path Trucking & Logistics**.
+A complete Next.js website for **Day Cabs, Box Trucks, and Cargo Vans** operating in Texas.
 
-**Connecting Texas. City to City**
+**Connecting Texas. City to City.**
 
-## Run locally
+## Start the website
 
-Use Node.js 22 LTS (or a compatible newer release).
+Use Node.js 22 LTS or a compatible newer release. Open a terminal in this folder:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-The development server uses port 4173. To choose another port, run `npm run dev -- --port 3000`.
+Open `http://localhost:4173`. To use another development port, run `npm run dev -- --port 3000`.
+
+For the production build:
+
+```bash
+npm run build
+npm start
+```
+
+This ZIP contains the source code, locked dependencies, locally served fonts, logo, photographs, and videos. No remote image service or video embed is required.
+
+## What is included
+
+- A new navy and blue trucking identity inspired by the angular Prime Path Holdings mark.
+- A fleet hero showing all three vehicle classes together, plus a dedicated photograph and service description for each.
+- Responsive desktop, tablet, and mobile layouts, with mobile navigation and a keyboard skip link.
+- A 12-second silent background video and an 18-second fleet film in an accessible dialog.
+- A Texas market explorer for Dallas–Fort Worth, Houston, Austin, and San Antonio, with keyboard navigation and route inquiry shortcuts.
+- Dedicated routes, local and regional delivery, and time-sensitive freight content.
+- A two-step freight request form with equipment selection, editable shipment details, and explicit delivery status.
+- FAQs, a privacy notice, a branded 404, page metadata, and a matching favicon.
+- Reduced-motion and data-saving preferences respected for background video. Phones use the still photograph.
+
+## Freight inquiries
+
+The form works immediately in **email-draft mode**. It validates the request, prepares an email addressed to **Rody@primepathholdings.com**, and tells the visitor to open and send the draft. It does not claim that an unsent draft was delivered.
+
+Optional automatic email delivery uses server-only configuration:
+
+| Variable           | Purpose                                                             |
+| ------------------ | ------------------------------------------------------------------- |
+| `RESEND_API_KEY`   | Email provider API key                                              |
+| `QUOTE_FROM_EMAIL` | Sender address on a verified domain                                 |
+| `QUOTE_TO_EMAIL`   | Optional recipient override; otherwise the business contact is used |
+
+Copy `.env.example` to `.env.local` and set these values for automatic delivery. The [Resend email API](https://resend.com/docs/api-reference/emails/send-email) receives the request on the server. Provider acceptance is required before the website displays a sent confirmation. A provider failure offers the prepared email as a fallback.
+
+The endpoint checks equipment and service choices, required contact consent, same-host origin, field types, and payload sizes. It also includes a honeypot and a provider timeout. Provider and hosting rate limits can be configured for a live installation. No live email was sent during the included validation.
+
+## Content and media
+
+The logo and four fleet photographs were created for this concept. The imagery is not documentary evidence of a fleet. The website discloses that the fleet imagery is a brand concept.
+
+The videos are silent motion edits of the included photographs, with slow camera moves and crossfades. They are not recordings of trucks in motion. Regenerate them with `python3 scripts/create-motion.py` if FFmpeg is available; neither Python nor FFmpeg is needed to run the website.
+
+All three vehicle classes appear in the opening copy, fleet section, services, FAQ, and quote form. Copy avoids invented fleet counts, delivery metrics, testimonials, certifications, and revenue claims. Equipment details and availability are confirmed for each inquiry.
+
+The business contact and Dallas–Fort Worth base are centralized in `lib/site.ts`. No unowned trucking domain is used as a canonical URL.
+
+## Edit the project
+
+| File                       | Purpose                                                          |
+| -------------------------- | ---------------------------------------------------------------- |
+| `app/page.tsx`             | Homepage sections, navigation, market explorer, and video dialog |
+| `app/globals.css`          | Typography, colors, responsive layout, and interaction styles    |
+| `components/Brand.tsx`     | Shared logo                                                      |
+| `components/QuoteForm.tsx` | Two-step freight inquiry flow                                    |
+| `lib/fleet.ts`             | Vehicles, services, and Texas markets                            |
+| `lib/site.ts`              | Business name, contact details, and slogan                       |
+| `app/api/quote/route.ts`   | Validated inquiry endpoint and optional email delivery           |
+| `public/media/`            | Logo, WebP photographs, and MP4 videos                           |
+| `docs/ASSETS.md`           | Media direction and asset notes                                  |
+
+## Validation
 
 ```bash
 npm run typecheck
 npm test
 npm run build
-npm start
 ```
 
-## GitHub → Vercel
+The API tests cover draft delivery, proxy origin handling, invalid requests, consent, all three equipment classes, provider acceptance, and provider failure. Provider calls are mocked.
 
-Commit the contents of this folder to your GitHub repository, then import that repository into Vercel. Select the **Next.js** framework preset, keep the project root at this folder, and use `npm run build`. No static export or custom server is needed. The quote endpoint runs as a server route.
-
-This package has not been pushed to a remote repository or deployed. Account connections were not available during this build. See the [official Next.js on Vercel documentation](https://vercel.com/docs/frameworks/full-stack/nextjs) for repository import and deployment settings.
-
-## Freight inquiries
-
-The form validates shipment and contact details on the client and server. Without email credentials, it prepares an email draft addressed to the existing business contact. It explicitly tells the visitor that the inquiry has **not** been sent yet. The visitor can open the draft or copy the details.
-
-For automatic delivery, configure these server-only environment variables in Vercel:
-
-| Variable           | Purpose                                                               |
-| ------------------ | --------------------------------------------------------------------- |
-| `RESEND_API_KEY`   | API key for the email provider                                        |
-| `QUOTE_FROM_EMAIL` | A sender on your verified email domain                                |
-| `QUOTE_TO_EMAIL`   | Optional recipient override; defaults to the contact in `lib/site.ts` |
-
-The endpoint sends through the [Resend email API](https://resend.com/docs/api-reference/emails/send-email). It confirms success only after provider acceptance and offers an email fallback on failure. The included tests mock the provider; no real email was sent during validation. Configure provider and hosting abuse controls appropriate to the live site's traffic before enabling automated delivery.
-
-## Included experience
-
-- Responsive desktop, tablet, and mobile layouts.
-- Custom navy-and-blue visual identity and typography served locally.
-- Three branded day-cab concept photographs, optimized as WebP.
-- A 12-second silent hero loop and a 19-second silent fleet film.
-- Texas market explorer with keyboard-accessible tabs and lane-specific inquiry shortcuts.
-- Dedicated trucking, regional truckload, and power-only service panels.
-- Service-to-form selection, required-field validation, contact consent, a honeypot, field limits, and same-host origin checks.
-- Expandable FAQs, native accessible film dialog, mobile navigation, privacy page, and branded 404.
-- Reduced-motion and data-saving preferences respected for background video.
-- Page metadata, custom favicon, and standard response security headers.
-
-## Media and content
-
-The logo is the supplied route-crest design. Fleet images are AI-generated brand concepts, and the footer discloses that. The MP4s are edited motion sequences from those still images, using slow camera moves and crossfades. They are not recordings of an operating fleet. All media is included locally; the site has no stock-photo dependency or external video embed.
-
-Regenerate the motion pieces with `python3 scripts/create-motion.py` if FFmpeg is installed. The generated MP4s are already included, so FFmpeg and Python are **not** required to run or deploy the website.
-
-The copy avoids invented fleet counts, revenue, testimonials, certifications, and delivery metrics. Services and Texas markets are presented for inquiry, with availability confirmed for each request.
-
-The existing contact details are centralized in `lib/site.ts`. A trucking-specific domain or email can replace them there when available. No unowned domain has been inserted as a canonical URL.
-
-## Main files
-
-| File                     | Purpose                                                   |
-| ------------------------ | --------------------------------------------------------- |
-| `app/page.tsx`           | Homepage, map, navigation, film, and inquiry interactions |
-| `app/globals.css`        | Design system and responsive layouts                      |
-| `app/api/quote/route.ts` | Validated freight inquiry endpoint                        |
-| `lib/site.ts`            | Business name, tagline, and contact details               |
-| `public/media/`          | Logo, photographs, and MP4s                               |
-| `tests/quote.test.ts`    | Delivery, validation, reverse-proxy, and error-path tests |
-| `.env.example`           | Optional automatic email configuration                    |
-
-## Validation status
-
-TypeScript and the optimized production build passed. The freight endpoint is covered by automated tests, including the no-credentials draft flow, origin handling behind a proxy, required contact consent, oversized payloads, provider acceptance, and provider failure. Media durations and encoding were checked with FFprobe.
-
-The supervised preview started successfully, but the remote browser connection stalled. Desktop/mobile visual inspection and end-to-end browser interaction checks remain unverified. Review those layouts in your Vercel preview before assigning the production domain. Live email delivery also remains unverified until the email provider is configured.
+Browser checks cover the desktop, phone, and tablet layouts; equipment shortcuts; required fields; freight and contact step transitions; a completed email draft; Texas market tabs; mobile navigation; and the fleet video dialog. Automated delivery still requires your provider configuration.

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/manrope";
-import "@fontsource/barlow-condensed/600.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Prime Path Trucking & Logistics | Connecting Texas. City to City",
   description:
-    "Texas freight, with a clear path forward. Dedicated trucking, regional truckload, and power-only programs built around your lanes.",
+    "Day cabs, box trucks, and cargo vans for Texas freight. Prime Path Trucking & Logistics connects Dallas–Fort Worth, Houston, Austin, San Antonio, and regional markets.",
   icons: { icon: "/favicon.svg" },
   openGraph: {
     title: "Prime Path Trucking & Logistics",
